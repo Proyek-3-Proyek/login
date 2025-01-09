@@ -140,7 +140,7 @@ function redirectBasedOnRole(role) {
     window.location.href = "/dashboard";
   } else if (role === "pelanggan") {
     window.location.href =
-      "https://proyek-3-proyek.github.io/tokline.github.io";
+      "/tokline.github.io";
   } else {
     showAlert("Role tidak dikenali", "error");
   }
