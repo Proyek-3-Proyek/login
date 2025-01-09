@@ -26,6 +26,18 @@ async function loginWithEmail() {
     return;
   }
 
+  // Tampilkan loading sebelum permintaan dikirim
+  let loading;
+  Swal.fire({
+    title: "Memverifikasi Login...",
+    text: "Harap tunggu sementara kami memverifikasi data Anda.",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+      loading = Swal;
+    },
+  });
+
   try {
     const response = await fetch(
       "https://backend-eight-phi-75.vercel.app/api/auth/login",
@@ -37,6 +49,9 @@ async function loginWithEmail() {
     );
 
     const data = await response.json();
+
+    // Tutup loading setelah respons diterima
+    loading.close();
 
     if (response.ok) {
       // Simpan token ke localStorage
@@ -51,15 +66,29 @@ async function loginWithEmail() {
     }
   } catch (error) {
     console.error("Error:", error);
+    loading.close(); // Tutup loading jika terjadi error
     showAlert("Terjadi kesalahan saat mencoba login.", "error");
   }
 }
 
 // Fungsi login menggunakan Google
 function loginWithGoogle() {
+  // Tampilkan loading sebelum pengalihan
+  let loading;
+  Swal.fire({
+    title: "Mengalihkan ke Google...",
+    text: "Harap tunggu sebentar.",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+      loading = Swal;
+    },
+  });
+
   const googleLoginUrl =
     "https://backend-eight-phi-75.vercel.app/api/auth/google";
   window.location.href = googleLoginUrl;
+  loading.close(); // Tutup loading setelah pengalihan
 }
 
 // Fungsi menangani callback Google login
@@ -123,7 +152,7 @@ function parseJwt(token) {
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
     atob(base64)
-      .split("")
+      .split(" ")
       .map((c) => `%${c.charCodeAt(0).toString(16).padStart(2, "0")}`)
       .join("")
   );
