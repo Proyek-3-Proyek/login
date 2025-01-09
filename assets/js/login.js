@@ -22,7 +22,7 @@ async function loginWithEmail() {
 
   // Validasi input
   if (!email || !password) {
-    showModal("Harap isi semua data!");
+    showAlert("Harap isi semua data!", "error");
     return;
   }
 
@@ -41,17 +41,17 @@ async function loginWithEmail() {
     if (response.ok) {
       // Simpan token ke localStorage
       localStorage.setItem("token", data.token);
-      alert("Login berhasil!");
+      showAlert("Login berhasil!", "success");
 
       // Redirect berdasarkan role
       const userRole = parseJwt(data.token).role;
       redirectBasedOnRole(userRole);
     } else {
-      showModal(data.message || "Login gagal!");
+      showAlert(data.message || "Login gagal!", "error");
     }
   } catch (error) {
     console.error("Error:", error);
-    showModal("Terjadi kesalahan saat mencoba login.");
+    showAlert("Terjadi kesalahan saat mencoba login.", "error");
   }
 }
 
@@ -90,7 +90,10 @@ function handleGoogleLoginCallback() {
       redirectBasedOnRole(payload.role);
     } catch (error) {
       console.error("Error:", error.message);
-      alert("Terjadi kesalahan saat login dengan Google. Silakan coba lagi.");
+      showAlert(
+        "Terjadi kesalahan saat login dengan Google. Silakan coba lagi.",
+        "error"
+      );
     } finally {
       // Bersihkan URL query string
       const baseUrl = window.location.origin + window.location.pathname;
@@ -110,7 +113,7 @@ function redirectBasedOnRole(role) {
     window.location.href =
       "https://proyek-3-proyek.github.io/tokline.github.io";
   } else {
-    throw new Error("Role tidak dikenali");
+    showAlert("Role tidak dikenali", "error");
   }
 }
 
@@ -128,14 +131,13 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 }
 
-// Fungsi untuk menampilkan modal error
-function showModal(message) {
-  const modal = document.getElementById("modalAlert");
-  modal.querySelector("p").innerText = message;
-  modal.classList.remove("hidden");
-
-  document.getElementById("closeModal").addEventListener("click", () => {
-    modal.classList.add("hidden");
+// Fungsi untuk menampilkan SweetAlert2
+function showAlert(message, type) {
+  Swal.fire({
+    title: type === "success" ? "Berhasil" : "Kesalahan",
+    text: message,
+    icon: type,
+    confirmButtonText: "OK",
   });
 }
 
