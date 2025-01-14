@@ -139,8 +139,7 @@ function redirectBasedOnRole(role) {
   if (role === "admin") {
     window.location.href = "/dashboard";
   } else if (role === "pelanggan") {
-    window.location.href =
-      "/tokline.github.io";
+    window.location.href = "/tokline.github.io";
   } else {
     showAlert("Role tidak dikenali", "error");
   }
@@ -148,16 +147,15 @@ function redirectBasedOnRole(role) {
 
 // Fungsi untuk mem-parse JWT
 function parseJwt(token) {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split(" ")
-      .map((c) => `%${c.charCodeAt(0).toString(16).padStart(2, "0")}`)
-      .join("")
-  );
-
-  return JSON.parse(jsonPayload);
+  try {
+    const base64Url = token.split(".")[1]; // Ambil bagian payload
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = atob(base64); // Dekode Base64
+    return JSON.parse(jsonPayload); // Parse ke JSON
+  } catch (error) {
+    console.error("Gagal mem-parsing JWT:", error);
+    throw new Error("Format token tidak valid");
+  }
 }
 
 // Fungsi untuk menampilkan SweetAlert2
