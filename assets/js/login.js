@@ -67,6 +67,7 @@ async function loginWithEmail() {
     showAlert("Terjadi kesalahan saat mencoba login.", "error");
   }
 }
+localStorage.setItem("justLoggedIn", "true");
 
 // Fungsi login menggunakan Google
 function loginWithGoogle() {
