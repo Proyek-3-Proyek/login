@@ -1,16 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded dipanggil, memulai login handling...");
-
   // Login menggunakan email dan password
   document
     .getElementById("loginButton")
     .addEventListener("click", loginWithEmail);
-
   // Login menggunakan Google
   document
     .getElementById("googleLoginButton")
     .addEventListener("click", loginWithGoogle);
-
   // Tangani callback Google login
   handleGoogleLoginCallback();
 });
@@ -112,11 +109,21 @@ function handleGoogleLoginCallback() {
       const payload = parseJwt(token);
       console.log("Payload JWT:", payload);
 
-      // Validasi token dan redirect berdasarkan role
+      // Validasi token
       if (!payload || !payload.id || !payload.role) {
         throw new Error("Token tidak valid");
       }
-      redirectBasedOnRole(payload.role);
+
+      // Tampilkan alert berhasil login
+      Swal.fire({
+        icon: "success",
+        title: "Login dengan Google berhasil!",
+        text: "Selamat datang kembali.",
+        confirmButtonText: "OK",
+      }).then(() => {
+        // Setelah user menekan OK, arahkan ke halaman berdasarkan role
+        redirectBasedOnRole(payload.role);
+      });
     } catch (error) {
       console.error("Error:", error.message);
       showAlert(
@@ -167,11 +174,6 @@ function showAlert(message, type) {
     confirmButtonText: "OK",
   });
 }
-
-// Event listener untuk tombol WhatsApp Login
-document.getElementById("whatsappLogin").addEventListener("click", () => {
-  window.location.href = "./../../../src/page/whatsauth/index.html";
-});
 
 // Redirect ke signup.html dengan efek loading
 const loadingOverlay = document.getElementById("loadingOverlay");
